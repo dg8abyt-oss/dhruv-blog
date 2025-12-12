@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhruv's Host Blog</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+        header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 10px; }
+        .post-link { display: block; padding: 15px; border: 1px solid #ddd; margin-bottom: 10px; text-decoration: none; color: #333; border-radius: 5px; transition: background 0.2s; }
+        .post-link:hover { background-color: #f9f9f9; border-color: #bbb; }
+        .post-date { color: #666; font-size: 0.9em; margin-bottom: 5px; }
+        .post-title { font-size: 1.2em; font-weight: bold; }
+        #loading { color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Dhruv's Host Blog</h1>
+    </header>
+
+    <div id="blog-list">
+        <p id="loading">Loading posts...</p>
+    </div>
+
+    <script>
+        async function loadPosts() {
+            try {
+                const response = await fetch('/api/posts');
+                const posts = await response.json();
+                
+                const listContainer = document.getElementById('blog-list');
+                listContainer.innerHTML = ''; // Clear loading text
+
+                if (posts.length === 0) {
+                    listContainer.innerHTML = '<p>No posts yet.</p>';
+                    return;
+                }
+
+                posts.forEach(post => {
+                    // Create the link element
+                    const link = document.createElement('a');
+                    link.href = post.url;
+                    link.className = 'post-link';
+
+                    link.innerHTML = `
+                        <div class="post-date">${post.date}</div>
+                        <div class="post-title">${post.title}</div>
+                    `;
+
+                    listContainer.appendChild(link);
+                });
+            } catch (err) {
+                console.error(err);
+                document.getElementById('blog-list').innerHTML = '<p>Error loading posts.</p>';
+            }
+        }
+
+        // Run on load
+        loadPosts();
+    </script>
+</body>
+</html>
