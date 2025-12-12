@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Dhruv's Blog</title>
+    <style>
+        body { font-family: sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #0070f3; color: white; border: none; cursor: pointer; font-size: 16px; }
+        button:hover { background: #005bb5; }
+        .note { font-size: 0.8em; color: #666; margin-top: -5px; margin-bottom: 10px; }
+        #status { margin-top: 15px; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>Add New Post</h2>
+    
+    <label>Title</label>
+    <input type="text" id="title" placeholder="e.g. My First Day">
+
+    <label>Filename (HTML file)</label>
+    <input type="text" id="filename" placeholder="first-day.html">
+    <div class="note">File must exist in the /blog/ folder. This form only adds the link.</div>
+
+    <label>Admin PIN</label>
+    <input type="password" id="pin" placeholder="Enter PIN">
+
+    <button onclick="publishPost()">Publish Post</button>
+
+    <div id="status"></div>
+
+    <script>
+        async function publishPost() {
+            const title = document.getElementById('title').value;
+            const filename = document.getElementById('filename').value;
+            const pin = document.getElementById('pin').value;
+            const status = document.getElementById('status');
+
+            status.innerText = "Processing...";
+            status.style.color = "black";
+
+            try {
+                const response = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, filename, pin })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    status.innerText = "Success! Post added.";
+                    status.style.color = "green";
+                    // Clear fields
+                    document.getElementById('title').value = '';
+                    document.getElementById('filename').value = '';
+                } else {
+                    status.innerText = "Error: " + data.error;
+                    status.style.color = "red";
+                }
+            } catch (err) {
+                status.innerText = "Network Error";
+                status.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
