@@ -1,0 +1,12 @@
+{
+  "name": "dhruvs-host-blog",
+  "version": "1.0.0",
+  "description": "A simple blog reading from Vercel KV",
+  "main": "index.html",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "@vercel/kv": "^1.0.1"
+  }
+}
